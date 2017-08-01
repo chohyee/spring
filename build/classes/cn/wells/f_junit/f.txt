@@ -1,0 +1,5 @@
+sts插件(其实是装Spring config editor)
+
+
+spring 与 junit整合测试(导入4+2+aop+test包)
+配置注解（创建容器，方便测试）

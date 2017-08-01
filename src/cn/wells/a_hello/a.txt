@@ -1,0 +1,6 @@
+需要导入bean约束
+
+beans: 最基本
+context:读取properties配置
+aop:配置aop
+tx:配置事务通知

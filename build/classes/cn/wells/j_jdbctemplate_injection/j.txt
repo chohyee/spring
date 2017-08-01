@@ -1,0 +1,8 @@
+1.spring提供了很多模板整合Dao技术，即提供封装好的对象操作数据库
+2.持久化技术---模板类
+	JDBC---org.springframework.jdbc.core.JdbcTemplate
+	Hibernate3.0---org.springframework.orm.hibernate3.HibernateTemplate
+	mybatis(ibatis3.0)---org.springframework.orm.ibatis.SqlMapClientTemplate
+	JPA---org.springframework.orm.jpa.JpaTemplate
+3.需要将UserDaoImpl对象交给容器管理，但是UserDaoImpl依赖JdbcTemplate对象，英雌也需要将JdbcTemplate，
+	而JdbcTemplate依赖DataSource对象，因此这三个对象都需要注入到容器中

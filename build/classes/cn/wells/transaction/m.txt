@@ -1,0 +1,46 @@
+(Spring事务管理方式一：本代码演示"编码式"实现事务)....用jdbc：DataSourceTransactionManager管理
+						   |-该方式需要了解，但是不实用，在Service方法中每个都需要加编码实现事务
+
+
+事务特性
+	|-原子性 :强调事务的不可分割.
+	|-一致性 :事务的执行的前后数据的完整性保持一致.
+	|-隔离性 :一个事务执行的过程中,不应该受到其他事务的干扰
+	|-持久性 :事务一旦结束,数据就持久到数据库
+事务操作
+	|-打开事务
+	|-提交事务
+	|-回滚事务
+spring提供事务操作接口(PlatformTransactionManager),依赖DataSource在不同的平台实现了不同的对象.注意:在spring中玩事务管理.最为核心的对象就是TransactionManager对象
+					|-jdbc：DataSourceTransactionManager
+					|-hibernate:HibernateTransitionmanager
+					|-mybatis:...
+spring提供一些管理事务的属性
+			|-事务的隔离级别
+			|		|-1.读未提交
+			|		|-2.读已提交
+			|		|-4.可重复读
+			|		|-8.串行化
+			|-是否只读(事务操作是否只读，比如不涉及增删改)
+			|	  |-true
+			|     |-false
+			|
+			|-事务传播行为(平行调用)PROPAGION_XXX
+					|---* 保证同一个事务中
+						PROPAGATION_REQUIRED 支持当前事务，如果不存在 就新建一个(默认)，即前service中haha()方法调用
+											  后一个service中的hiahia()方法，如果haha方法开启了事务，hiahia直接
+											  用该方法，如果haha没开启事务，则调hiahia时新建一个事务，两个方法在同一个事务中。
+						PROPAGATION_SUPPORTS 支持当前事务，如果不存在，就不使用事务
+						PROPAGATION_MANDATORY  支持当前事务，如果不存在，抛出异常
+						* 保证没有在同一个事务中
+						PROPAGATION_REQUIRES_NEW  如果有事务存在，挂起当前事务，创建一个新的事务
+						PROPAGATION_NOT_SUPPORTED  以非事务方式运行，如果有事务存在，挂起当前事务
+						PROPAGATION_NEVER 以非事务方式运行，如果有事务存在，抛出异常
+						PROPAGATION_NESTED 如果当前事务存在，则嵌套事务执行
+事务操作代码演示
+	|-cn.wells.transaction(原始的事务操作)
+	|-cn.wells.transaction_xml(xml配置方式事务操作)
+	|-cn.wells.transaction_annotation(注解方式事务操作)
+						
+						
+						

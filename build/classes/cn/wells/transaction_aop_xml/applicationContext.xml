@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd ">
+	
+	<!-- 2.指定Spring读取properties配置文件，建议在properties文件关键字前加前缀，如jdbc.jdbcUrl -->
+	<context:property-placeholder location="classpath:db.properties" />
+	
+	
+	<!-- 3.将连接池注入Spring容器 -->
+	<bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<!-- 通过set方法设置属性,读取配置文件 -->
+		<!-- ${key}这样的表达式在XML中，代表引入的properties文件中key对应的一个变量值，完全是靠第三方jar自己解析的。 -->
+		<property name="jdbcUrl" value="${jdbc.jdbcUrl}" ></property>
+		<property name="driverClass" value="${jdbc.driverClass}" ></property>
+		<property name="user" value="${jdbc.user}" ></property>
+		<property name="password" value="${jdbc.password}" ></property>
+	</bean>
+	
+	<!-- 4.事务核心管理器，封装了所有事务操作，依赖于连接池 -->
+	<bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- 重要  -->
+	<!-- 配置事务通知(其实就是加入环绕通知:因为是事务控制) -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<!-- 属性设置是以方法为单位的 -->
+		<!-- propagation:事务传播行为 -->
+		<!-- isolation:事务隔离级别 -->
+		<!-- read-only:事务所在方法是否只读，而不更改数据库 -->
+		<tx:attributes>
+			<tx:method name="transfer" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false"/>
+			
+			<!-- 企业中按如下的标准配置的(通配符方式) -->
+			<!-- <tx:method name="save*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
+			<tx:method name="persist*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
+			<tx:method name="update*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
+			<tx:method name="modify*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
+			<tx:method name="delete*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
+			<tx:method name="remove*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" />
+			<tx:method name="get*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="true" />
+			<tx:method name="find*" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="true" />
+			<tx:method name="transfer" isolation="REPEATABLE_READ" propagation="REQUIRED" read-only="false" /> -->
+		</tx:attributes>
+	</tx:advice>
+	<!-- 重要  -->
+	<!-- 配置织入(切入点+切面) -->
+	<aop:config>
+		<!-- 配置切入点 -->
+		<aop:pointcut expression="execution(* cn.wells.transaction_aop_xml.*ServiceImpl.*(..))" id="txPc"/>
+		
+		<!-- 在aop动态代理是用<aop:aspect>，在Spring提供的事务管理要用<aop:advisor> -->
+			<!-- 配置切面 : 通知+切点
+		 	advice-ref:通知的名称
+		 	pointcut-ref:切点的名称-->
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPc"/>
+		
+	</aop:config>
+	
+	<!-- 6.将AccountDaoImpl放入spring容器 -->
+	<bean name="accountDao" class="cn.wells.transaction_aop_xml.AccountDaoImpl" >
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- UserDaoImpl继承JdbcDaoSupport类，AccountDaoImpl继承了父类的setDataSource()方法,
+			 因此会将该方法设置进父类的JdbcTemplate对象中去(看源码，别猜测) -->
+	</bean>
+	
+	<!-- 7.AccountServiceImpl -->
+	<bean name="accountService" class="cn.wells.transaction_aop_xml.AccountServiceImpl" >
+		<property name="ad" ref="accountDao"></property>
+	</bean>
+	
+	
+</beans>

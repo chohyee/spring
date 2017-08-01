@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns="http://www.springframework.org/schema/beans" 
+xmlns:p="http://www.springframework.org/schema/p" 
+xmlns:context="http://www.springframework.org/schema/context" 
+xmlns:aop="http://www.springframework.org/schema/aop" 
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd ">
+	
+	
+	<!-- 默认前缀名字空间 xmlns="http://www.springframework.org/schema/beans"-->
+	<!-- 前缀名字为p的名字空间xmlns:p="http://www.springframework.org/schema/p" -->
+	
+	<!-- 指定扫描cn.wells.domain包下的所有类中的注解.然后将注解的类注入到容器中
+	 注意:扫描包时.会扫描指定报下的所有子孙包 -->
+	<context:component-scan base-package="cn.wells.domain"></context:component-scan>
+	<context:component-scan base-package="cn.wells.h_annotationaop"></context:component-scan>
+
+	<!-- 准备工作: 导入aop(约束)命名空间 -->
+<!-- 1.配置目标对象 -->
+	<bean name="userService" class="cn.wells.g_aop.UserServiceImpl" ></bean>
+<!-- 2.配置通知对象 -->
+	<bean name="myAdvice" class="cn.wells.g_aop.MyAdvice" ></bean>
+<!-- 3.配置将通知织入目标对象 -->
+	<aop:config>
+		<!-- 配置切入点 
+			public void cn.itcast.service.UserServiceImpl.save() 
+			void cn.itcast.service.UserServiceImpl.save()
+			* cn.itcast.service.UserServiceImpl.save()
+			* cn.itcast.service.UserServiceImpl.*()
+			
+			* cn.itcast.service.*ServiceImpl.*(..)
+			* cn.itcast.service..*ServiceImpl.*(..)
+		-->
+		<!-- 注意：用*通配public void等权限时，主要*与方法名之间有个空格，如下面的* cn.wells.g_aop... -->
+		<aop:pointcut expression="execution(* cn.wells.g_aop.*UserServiceImpl.*(..))" id="pc"/>
+		<aop:aspect ref="myAdvice">
+			<!-- 下面为id为pc的切入点配置的通知,按下面这样写就是为包下每个*UserServiceImpl对象的任意一个方法配置所有的通知 -->
+			<!-- 指定名为before方法作为前置通知 -->
+			<aop:before method="before" pointcut-ref="pc" />
+			<!-- 后置 -->
+			<aop:after-returning method="afterReturning" pointcut-ref="pc" />
+			<!-- 环绕通知 -->
+			<aop:around method="around" pointcut-ref="pc" />
+			<!-- 异常拦截通知 -->
+			<aop:after-throwing method="afterException" pointcut-ref="pc"/>
+			<!-- 后置 -->
+			<aop:after method="after" pointcut-ref="pc"/>
+		</aop:aspect>
+	</aop:config>
+	
+
+	
+	
+
+</beans>

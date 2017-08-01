@@ -1,0 +1,15 @@
+Spring中aop的演示
+aop名词:
+	|-joinpoint(连接点):目标对象中，所有可以增强的方法
+	|-pointcut（切入点）：目标对象，需要被增强的方法
+	|-advice（通知/增强）：增强的代码
+	|-target（目标对象）：被代理的对象
+	|-weaving（织入）：将通知织入切入点的过程
+	|-proxy（代理）：将通知织入目标对象之后形成的代理对象
+	|-aspect（切面）：切入点+通知
+导包(spring的动态代理和第三方代理包)4+2+aop+aspect（com.springsource.org.aopalliance-1.0.0.jar&&com.springsource.org.aspectj.weaver-1.6.8.RELEASE.jar）
+
+
+注意，如果是使用Spring自己的动态代理，则目标对象必须实现一个接口，如果是采用第三方cglib代理，则需要目标对象不是final类型
+准备好“通知类MyAdvice”
+在配置文件中导入aop约束

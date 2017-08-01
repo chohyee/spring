@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd"
+	xmlns:p="http://www.springframework.org/schema/p"
+	>
+	<!-- 默认前缀名字空间 xmlns="http://www.springframework.org/schema/beans"-->
+	<!-- 前缀名字为p的名字空间xmlns:p="http://www.springframework.org/schema/p" -->
+	
+	<!-- 将User对象交给Spring管理 -->
+	<bean name="user" class="cn.wells.domain.User" scope="prototype" init-method="init" destroy-method="destory">
+		<!-- 1.scope属性 在bean中定义了对象生命周期
+			singleton:被标识的对象在容器中将只存在一个
+			prototype:被标识的对象在容器中将存在多个
+			request:web环境下，对象的生命周期与request一致
+			session:web环境下，对象的生命周期与session一致
+		 -->
+		 <!-- 2.生命周期属性init-method和destroy-method
+		 	init-method:指定类的对象的某个方法在对象创建之后立即调用
+		 	destroy-method:指定类的对象的某个方法在容器关闭销毁所有对象之前调用
+		  -->
+	</bean>
+</beans>

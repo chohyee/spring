@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns="http://www.springframework.org/schema/beans"
+  xmlns:p="http://www.springframework.org/schema/p"
+   xmlns:context="http://www.springframework.org/schema/context" 
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd ">
+	
+	<!-- 1.将连接池注入Spring容器 -->
+	<bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<!-- 通过set方法设置属性,读取配置文件 -->
+		<property name="jdbcUrl" value="jdbc:mysql:///test" ></property>
+		<property name="driverClass" value="com.mysql.jdbc.Driver" ></property>
+		<property name="user" value="root" ></property>
+		<property name="password" value="272400" ></property>
+	</bean>
+	<!-- 2.将JdbcTemplate注入spring容器中 -->
+	<bean name="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<!-- 3.将UserDao放入spring容器 -->
+	<bean name="userDao" class="cn.wells.j_jdbctemplate_injection.UserDaoImpl" >
+		<property name="jt" ref="jdbcTemplate" ></property>
+	</bean>
+	
+	
+	
+</beans>

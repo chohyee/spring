@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd ">
+	
+	<!-- 1.指定Spring读取properties配置文件，建议在properties文件关键字前加前缀，如jdbc.jdbcUrl -->
+	<context:property-placeholder location="classpath:db.properties" />
+		 
+	<!-- 2.将连接池注入Spring容器 -->
+	<bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<!-- 通过set方法设置属性,读取配置文件 -->
+		<!-- ${key}这样的表达式在XML中，代表引入的properties文件中key对应的一个变量值，完全是靠第三方jar自己解析的。 -->
+		<property name="jdbcUrl" value="${jdbc.jdbcUrl}" ></property>
+		<property name="driverClass" value="${jdbc.driverClass}" ></property>
+		<property name="user" value="${jdbc.user}" ></property>
+		<property name="password" value="${jdbc.password}" ></property>
+	</bean>
+	
+	<!-- 3.开启使用注解管理aop事务 -->
+	<tx:annotation-driven/>
+	
+	<!-- 4.事务核心管理器，封装了所有事务操作，依赖于连接池 -->
+	<bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- 5.将AccountDaoImpl放入spring容器 -->
+	<bean name="accountDao" class="cn.wells.transaction_aop_annotation.AccountDaoImpl" >
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- UserDaoImpl继承JdbcDaoSupport类，AccountDaoImpl继承了父类的setDataSource()方法,
+			 因此会将该方法设置进父类的JdbcTemplate对象中去(看源码，别猜测) -->
+	</bean>
+	
+	<!-- 6.AccountServiceImpl -->
+	<bean name="accountService" class="cn.wells.transaction_aop_annotation.AccountServiceImpl" >
+		<property name="ad" ref="accountDao"></property>
+	</bean>
+	
+	
+</beans>

@@ -1,0 +1,7 @@
+(以Person,Cat类为例)
+使用注解配置Spring
+需要导入Spring-aop包（新版要求的）
+需要引入新的命名空间context
+在applicationContext.xml中开启使用注解代理配置文件<context:component-scan base-package="cn.wells.domain">
+		  component-scan(扫描)base-package包下的类及子包类
+在类中使用注解完成配置	(Component、、、)	  

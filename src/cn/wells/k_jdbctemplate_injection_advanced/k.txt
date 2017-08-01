@@ -1,0 +1,4 @@
+扩展内容
+1.UserDaoImpl继承JdbcDaoSupport,而JdbcDaoSupport中包含了JDBC模板对象
+	然后用super.getJdbcTemplate()获取该JDBC模板对象,因此只需要给JdbcDaoSupport对象一个DataSource对象即可
+2.给UserDaoImpl准备好一个DataSource对象用以依赖

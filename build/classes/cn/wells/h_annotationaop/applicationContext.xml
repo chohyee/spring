@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xmlns="http://www.springframework.org/schema/beans" 
+xmlns:p="http://www.springframework.org/schema/p" 
+xmlns:context="http://www.springframework.org/schema/context" 
+xmlns:aop="http://www.springframework.org/schema/aop" 
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd ">
+	
+	
+	<!-- 默认前缀名字空间 xmlns="http://www.springframework.org/schema/beans"-->
+	<!-- 前缀名字为p的名字空间xmlns:p="http://www.springframework.org/schema/p" -->
+	
+	<!-- 指定扫描cn.wells.domain包下的所有类中的注解.然后将注解的类注入到容器中
+	 注意:扫描包时.会扫描指定报下的所有子孙包 -->
+	<context:component-scan base-package="cn.wells.domain"></context:component-scan>
+
+
+	<!-- 准备工作: 导入aop(约束)命名空间 -->
+	<!-- 1.配置目标对象 -->
+	<bean name="userService2" class="cn.wells.h_annotationaop.UserServiceImpl" ></bean>
+	<!-- 开启使用注解完成织入 -->
+	<!-- 2.配置通知对象 -->
+	<bean name="myAdvice" class="cn.wells.h_annotationaop.MyAdvice" ></bean>
+	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+	<!-- 用注解配置aop上面三个缺一不可 -->
+</beans>

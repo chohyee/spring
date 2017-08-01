@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd"
+	>
+	<!-- 默认前缀名字空间 xmlns="http://www.springframework.org/schema/beans"-->
+	<!-- 前缀名字为p的名字空间xmlns:p="http://www.springframework.org/schema/p" -->
+	
+	<!-- 对象属性注入(4种)
+		1、set方法注入
+		2、构造函数注入
+		3、p名称空间注入
+		4、spel（Spring expression Language 表达式语言）
+	 -->
+	<!-- 注入类型
+	 	1、基本类型注入
+	 	2、引用类型注入
+	 	3、复杂类型注入(单独列出)
+	  -->
+	<!-- set方式注入(重要) -->
+	<bean name="car1" class="cn.wells.domain.Car">
+		<property name="color" value="red"></property>
+		<property name="price" value="999"></property>
+	</bean>
+	<bean name="user1" class="cn.wells.domain.User">
+		<!-- 基本数据类型注入 -->
+		<property name="name" value="Tom"></property>
+		<property name="age" value="18"></property>
+		<!-- 应用类型注入 :car为下面创建的Car对象-->
+		<property name="car" ref="car1"></property>
+	</bean>
+	<!-- 构造函数注入(重要)index、name、type分别对应构造函数中的第几个参数，名字字段及类型 -->
+	<bean name="user2" class="cn.wells.domain.User">
+		<constructor-arg name="name" index="0" type="java.lang.String" value="lucy"></constructor-arg>
+		<constructor-arg name="age" index="1" type="int" value="18"></constructor-arg> 
+		<constructor-arg name="car" index="2" ref="car1" type="cn.wells.domain.Car"></constructor-arg>
+	</bean>
+	<!-- p名字空间注入 (需要导入schema下的p约束)-->
+	<!-- 注意引用类型后加ref -->
+	<bean name="user3" class="cn.wells.domain.User" p:name="tom" p:age="18" p:car-ref="car1"></bean>
+	<!-- spel方式属性注入（有点像set方式注入）,就是借用其他对象的值 -->
+	<!-- 注意用ref而不是value,并且引用类型不能用#{。。。} -->
+	<bean name="user4" class="cn.wells.domain.User">
+		<property name="name" value="#{user1.name}"></property>
+		<property name="age" value="#{user2.age}"></property>
+		<property name="car" ref="car1"></property>
+	</bean>
+	
+	
+	
+	
+	
+</beans>
